@@ -1,0 +1,35 @@
+<!-- SAMPLE - simplified, not a real Nintex export -->
+<Workflow name="Multiple Unsupported Actions Workflow">
+    <Variables>
+        <Variable name="RecordCount" value="0" />
+    </Variables>
+    <Actions>
+        <Action id="act-1" type="Start" name="Workflow Start">
+            <Settings />
+        </Action>
+        <Action id="act-2" type="Loop" name="Process Records">
+            <Settings>
+                <condition>{Variable:RecordCount} lessThan 5</condition>
+            </Settings>
+        </Action>
+        <Action id="act-3" type="SetVariable" name="Update Count">
+            <Settings>
+                <variable_name>RecordCount</variable_name>
+                <variable_value>5</variable_value>
+            </Settings>
+        </Action>
+        <Action id="act-4" type="WebServiceCall" name="Call Legacy API">
+            <Settings>
+                <endpoint>https://api.legacy.internal/sync</endpoint>
+                <method>POST</method>
+            </Settings>
+        </Action>
+        <Action id="act-5" type="SendEmail" name="Notify Completion">
+            <Settings>
+                <to>admin@example.com</to>
+                <subject>Sync Complete</subject>
+                <body>All batch records have been synced.</body>
+            </Settings>
+        </Action>
+    </Actions>
+</Workflow>

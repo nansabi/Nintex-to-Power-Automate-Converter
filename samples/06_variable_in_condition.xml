@@ -1,0 +1,43 @@
+<!-- SAMPLE - simplified, not a real Nintex export -->
+<Workflow name="Variable In Condition Workflow">
+    <Variables>
+        <Variable name="UserEmail" value="client@example.com" />
+        <Variable name="UserTier" value="Standard" />
+    </Variables>
+    <Actions>
+        <Action id="act-1" type="Start" name="Workflow Start">
+            <Settings />
+        </Action>
+        <Action id="act-2" type="SetVariable" name="Promote User Tier">
+            <Settings>
+                <variable_name>UserTier</variable_name>
+                <variable_value>VIP</variable_value>
+            </Settings>
+        </Action>
+        <Action id="act-3" type="Condition" name="Evaluate User Tier">
+            <Settings>
+                <left>{Variable:UserTier}</left>
+                <operator>equals</operator>
+                <right>VIP</right>
+            </Settings>
+            <Then>
+                <Action id="act-4" type="SendEmail" name="Send VIP Welcome Email">
+                    <Settings>
+                        <to>{Variable:UserEmail}</to>
+                        <subject>Welcome to VIP Access</subject>
+                        <body>You have been upgraded to the VIP tier.</body>
+                    </Settings>
+                </Action>
+            </Then>
+            <Else>
+                <Action id="act-5" type="SendEmail" name="Send Standard Welcome Email">
+                    <Settings>
+                        <to>{Variable:UserEmail}</to>
+                        <subject>Welcome to Standard Access</subject>
+                        <body>Thank you for joining our platform.</body>
+                    </Settings>
+                </Action>
+            </Else>
+        </Action>
+    </Actions>
+</Workflow>

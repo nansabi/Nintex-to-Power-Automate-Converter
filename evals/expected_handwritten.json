@@ -1,0 +1,56 @@
+{
+  "01_leave_approval": {
+    "action_types": [
+      "InitializeVariable",
+      "InitializeVariable",
+      "InitializeVariable",
+      "OpenApiConnection",
+      "If",
+      "OpenApiConnection",
+      "OpenApiConnection"
+    ],
+    "expressions": [
+      "Leave request for @{variables('EmployeeName')}",
+      "@variables('ApproverEmail')",
+      "@body('Manager_Approval')?['outcome']",
+      "@variables('EmployeeEmail')",
+      "@variables('EmployeeEmail')"
+    ]
+  },
+  "05_nested_conditions": {
+    "action_types": [
+      "InitializeVariable",
+      "InitializeVariable",
+      "InitializeVariable",
+      "OpenApiConnection",
+      "If",
+      "If",
+      "OpenApiConnection",
+      "OpenApiConnection",
+      "OpenApiConnection"
+    ],
+    "expressions": [
+      "@variables('ManagerEmail')",
+      "@body('Tier_1_Approval')?['outcome']",
+      "@variables('RequestPriority')",
+      "@variables('ApplicantEmail')",
+      "@variables('ApplicantEmail')",
+      "@variables('ApplicantEmail')"
+    ]
+  },
+  "06_variable_in_condition": {
+    "action_types": [
+      "InitializeVariable",
+      "InitializeVariable",
+      "SetVariable",
+      "If",
+      "OpenApiConnection",
+      "OpenApiConnection"
+    ],
+    "expressions": [
+      "@variables('UserTier')",
+      "@variables('UserEmail')",
+      "@variables('UserEmail')"
+    ]
+  }
+}

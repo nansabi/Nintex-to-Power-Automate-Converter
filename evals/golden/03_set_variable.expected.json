@@ -1,0 +1,90 @@
+{
+  "name": "Set Variable and Send Email",
+  "definition": {
+    "triggers": {
+      "manual": {
+        "type": "Request",
+        "kind": "Button",
+        "inputs": {
+          "schema": {
+            "type": "object",
+            "properties": {},
+            "required": []
+          }
+        }
+      }
+    },
+    "actions": {
+      "Initialize_variable_NotificationMessage": {
+        "type": "InitializeVariable",
+        "inputs": {
+          "variables": [
+            {
+              "name": "NotificationMessage",
+              "type": "String",
+              "value": ""
+            }
+          ]
+        },
+        "runAfter": {}
+      },
+      "Initialize_variable_AdminEmail": {
+        "type": "InitializeVariable",
+        "inputs": {
+          "variables": [
+            {
+              "name": "AdminEmail",
+              "type": "String",
+              "value": "admin@company.com"
+            }
+          ]
+        },
+        "runAfter": {
+          "Initialize_variable_NotificationMessage": [
+            "Succeeded"
+          ]
+        }
+      },
+      "Update_Status_Message": {
+        "type": "SetVariable",
+        "inputs": {
+          "name": "NotificationMessage",
+          "value": "System maintenance is scheduled for tonight at 10 PM UTC."
+        },
+        "runAfter": {
+          "Initialize_variable_AdminEmail": [
+            "Succeeded"
+          ]
+        }
+      },
+      "Send_Maintenance_Alert": {
+        "type": "OpenApiConnection",
+        "inputs": {
+          "host": {
+            "connectionName": "shared_office365",
+            "operationId": "SendEmailNotification_V2",
+            "apiId": "/providers/Microsoft.PowerApps/apis/shared_office365"
+          },
+          "parameters": {
+            "emailMessage/To": "@variables('AdminEmail')",
+            "emailMessage/Subject": "Scheduled Maintenance Alert",
+            "emailMessage/Body": "Notice: @{variables('NotificationMessage')}"
+          }
+        },
+        "runAfter": {
+          "Update_Status_Message": [
+            "Succeeded"
+          ]
+        }
+      }
+    }
+  },
+  "needs_manual_review": false,
+  "unsupported": [],
+  "warnings": [],
+  "metrics": {
+    "total_actions": 3,
+    "converted_count": 3,
+    "coverage_percent": 100.0
+  }
+}

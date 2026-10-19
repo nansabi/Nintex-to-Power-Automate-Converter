@@ -1,0 +1,62 @@
+<!-- SAMPLE - simplified, not a real Nintex export -->
+<Workflow name="Nested Conditions Workflow">
+    <Variables>
+        <Variable name="ApplicantEmail" value="applicant@example.com" />
+        <Variable name="ManagerEmail" value="manager@example.com" />
+        <Variable name="RequestPriority" value="High" />
+    </Variables>
+    <Actions>
+        <Action id="act-1" type="Start" name="Workflow Start">
+            <Settings />
+        </Action>
+        <Action id="act-2" type="RequestApproval" name="Tier 1 Approval">
+            <Settings>
+                <approver>{Variable:ManagerEmail}</approver>
+                <task_title>Review Application</task_title>
+            </Settings>
+        </Action>
+        <Action id="act-3" type="Condition" name="Check If Approved">
+            <Settings>
+                <left>{Action:act-2.Outcome}</left>
+                <operator>equals</operator>
+                <right>Approved</right>
+            </Settings>
+            <Then>
+                <Action id="act-4" type="Condition" name="Check If High Priority">
+                    <Settings>
+                        <left>{Variable:RequestPriority}</left>
+                        <operator>equals</operator>
+                        <right>High</right>
+                    </Settings>
+                    <Then>
+                        <Action id="act-5" type="SendEmail" name="Send Expedited Notice">
+                            <Settings>
+                                <to>{Variable:ApplicantEmail}</to>
+                                <subject>Expedited Approval Confirmed</subject>
+                                <body>Your high priority request has been approved and expedited.</body>
+                            </Settings>
+                        </Action>
+                    </Then>
+                    <Else>
+                        <Action id="act-6" type="SendEmail" name="Send Standard Notice">
+                            <Settings>
+                                <to>{Variable:ApplicantEmail}</to>
+                                <subject>Standard Approval Confirmed</subject>
+                                <body>Your request has been approved.</body>
+                            </Settings>
+                        </Action>
+                    </Else>
+                </Action>
+            </Then>
+            <Else>
+                <Action id="act-7" type="SendEmail" name="Send Rejection Notice">
+                    <Settings>
+                        <to>{Variable:ApplicantEmail}</to>
+                        <subject>Request Not Approved</subject>
+                        <body>Your request was declined during review.</body>
+                    </Settings>
+                </Action>
+            </Else>
+        </Action>
+    </Actions>
+</Workflow>

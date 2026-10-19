@@ -1,0 +1,179 @@
+{
+  "name": "Nested Conditions Workflow",
+  "definition": {
+    "triggers": {
+      "manual": {
+        "type": "Request",
+        "kind": "Button",
+        "inputs": {
+          "schema": {
+            "type": "object",
+            "properties": {},
+            "required": []
+          }
+        }
+      }
+    },
+    "actions": {
+      "Initialize_variable_ApplicantEmail": {
+        "type": "InitializeVariable",
+        "inputs": {
+          "variables": [
+            {
+              "name": "ApplicantEmail",
+              "type": "String",
+              "value": "applicant@example.com"
+            }
+          ]
+        },
+        "runAfter": {}
+      },
+      "Initialize_variable_ManagerEmail": {
+        "type": "InitializeVariable",
+        "inputs": {
+          "variables": [
+            {
+              "name": "ManagerEmail",
+              "type": "String",
+              "value": "manager@example.com"
+            }
+          ]
+        },
+        "runAfter": {
+          "Initialize_variable_ApplicantEmail": [
+            "Succeeded"
+          ]
+        }
+      },
+      "Initialize_variable_RequestPriority": {
+        "type": "InitializeVariable",
+        "inputs": {
+          "variables": [
+            {
+              "name": "RequestPriority",
+              "type": "String",
+              "value": "High"
+            }
+          ]
+        },
+        "runAfter": {
+          "Initialize_variable_ManagerEmail": [
+            "Succeeded"
+          ]
+        }
+      },
+      "Tier_1_Approval": {
+        "type": "OpenApiConnection",
+        "inputs": {
+          "host": {
+            "connectionName": "shared_approvals",
+            "operationId": "StartAndWaitForAnApproval",
+            "apiId": "/providers/Microsoft.PowerApps/apis/shared_approvals"
+          },
+          "parameters": {
+            "approvalType": "ApproveRejectFirstToRespond",
+            "title": "Review Application",
+            "assignedTo": "@variables('ManagerEmail')"
+          }
+        },
+        "runAfter": {
+          "Initialize_variable_RequestPriority": [
+            "Succeeded"
+          ]
+        }
+      },
+      "Check_If_Approved": {
+        "type": "If",
+        "expression": {
+          "equals": [
+            "@body('Tier_1_Approval')?['outcome']",
+            "Approve"
+          ]
+        },
+        "actions": {
+          "Check_If_High_Priority": {
+            "type": "If",
+            "expression": {
+              "equals": [
+                "@variables('RequestPriority')",
+                "High"
+              ]
+            },
+            "actions": {
+              "Send_Expedited_Notice": {
+                "type": "OpenApiConnection",
+                "inputs": {
+                  "host": {
+                    "connectionName": "shared_office365",
+                    "operationId": "SendEmailNotification_V2",
+                    "apiId": "/providers/Microsoft.PowerApps/apis/shared_office365"
+                  },
+                  "parameters": {
+                    "emailMessage/To": "@variables('ApplicantEmail')",
+                    "emailMessage/Subject": "Expedited Approval Confirmed",
+                    "emailMessage/Body": "Your high priority request has been approved and expedited."
+                  }
+                },
+                "runAfter": {}
+              }
+            },
+            "else": {
+              "actions": {
+                "Send_Standard_Notice": {
+                  "type": "OpenApiConnection",
+                  "inputs": {
+                    "host": {
+                      "connectionName": "shared_office365",
+                      "operationId": "SendEmailNotification_V2",
+                      "apiId": "/providers/Microsoft.PowerApps/apis/shared_office365"
+                    },
+                    "parameters": {
+                      "emailMessage/To": "@variables('ApplicantEmail')",
+                      "emailMessage/Subject": "Standard Approval Confirmed",
+                      "emailMessage/Body": "Your request has been approved."
+                    }
+                  },
+                  "runAfter": {}
+                }
+              }
+            },
+            "runAfter": {}
+          }
+        },
+        "else": {
+          "actions": {
+            "Send_Rejection_Notice": {
+              "type": "OpenApiConnection",
+              "inputs": {
+                "host": {
+                  "connectionName": "shared_office365",
+                  "operationId": "SendEmailNotification_V2",
+                  "apiId": "/providers/Microsoft.PowerApps/apis/shared_office365"
+                },
+                "parameters": {
+                  "emailMessage/To": "@variables('ApplicantEmail')",
+                  "emailMessage/Subject": "Request Not Approved",
+                  "emailMessage/Body": "Your request was declined during review."
+                }
+              },
+              "runAfter": {}
+            }
+          }
+        },
+        "runAfter": {
+          "Tier_1_Approval": [
+            "Succeeded"
+          ]
+        }
+      }
+    }
+  },
+  "needs_manual_review": false,
+  "unsupported": [],
+  "warnings": [],
+  "metrics": {
+    "total_actions": 7,
+    "converted_count": 7,
+    "coverage_percent": 100.0
+  }
+}

@@ -1,0 +1,63 @@
+{
+  "name": "Bad Reference Workflow",
+  "definition": {
+    "triggers": {
+      "manual": {
+        "type": "Request",
+        "kind": "Button",
+        "inputs": {
+          "schema": {
+            "type": "object",
+            "properties": {},
+            "required": []
+          }
+        }
+      }
+    },
+    "actions": {
+      "Initialize_variable_ValidEmail": {
+        "type": "InitializeVariable",
+        "inputs": {
+          "variables": [
+            {
+              "name": "ValidEmail",
+              "type": "String",
+              "value": "admin@example.com"
+            }
+          ]
+        },
+        "runAfter": {}
+      },
+      "Send_Email_With_Bad_Reference": {
+        "type": "OpenApiConnection",
+        "inputs": {
+          "host": {
+            "connectionName": "shared_office365",
+            "operationId": "SendEmailNotification_V2",
+            "apiId": "/providers/Microsoft.PowerApps/apis/shared_office365"
+          },
+          "parameters": {
+            "emailMessage/To": "@variables('ValidEmail')",
+            "emailMessage/Subject": "System Notification",
+            "emailMessage/Body": "The unresolvable variable is {Variable:NonExistentVariable}"
+          }
+        },
+        "runAfter": {
+          "Initialize_variable_ValidEmail": [
+            "Succeeded"
+          ]
+        }
+      }
+    }
+  },
+  "needs_manual_review": false,
+  "unsupported": [],
+  "warnings": [
+    "Referenced variable 'NonExistentVariable' in '{Variable:NonExistentVariable}' is not declared in workflow variables."
+  ],
+  "metrics": {
+    "total_actions": 2,
+    "converted_count": 2,
+    "coverage_percent": 100.0
+  }
+}

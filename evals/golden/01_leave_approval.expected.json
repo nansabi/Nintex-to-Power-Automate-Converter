@@ -1,0 +1,147 @@
+{
+  "name": "Leave Request Approval",
+  "definition": {
+    "triggers": {
+      "manual": {
+        "type": "Request",
+        "kind": "Button",
+        "inputs": {
+          "schema": {
+            "type": "object",
+            "properties": {},
+            "required": []
+          }
+        }
+      }
+    },
+    "actions": {
+      "Initialize_variable_EmployeeName": {
+        "type": "InitializeVariable",
+        "inputs": {
+          "variables": [
+            {
+              "name": "EmployeeName",
+              "type": "String",
+              "value": "Alice Smith"
+            }
+          ]
+        },
+        "runAfter": {}
+      },
+      "Initialize_variable_ApproverEmail": {
+        "type": "InitializeVariable",
+        "inputs": {
+          "variables": [
+            {
+              "name": "ApproverEmail",
+              "type": "String",
+              "value": "manager@company.com"
+            }
+          ]
+        },
+        "runAfter": {
+          "Initialize_variable_EmployeeName": [
+            "Succeeded"
+          ]
+        }
+      },
+      "Initialize_variable_EmployeeEmail": {
+        "type": "InitializeVariable",
+        "inputs": {
+          "variables": [
+            {
+              "name": "EmployeeEmail",
+              "type": "String",
+              "value": "alice@company.com"
+            }
+          ]
+        },
+        "runAfter": {
+          "Initialize_variable_ApproverEmail": [
+            "Succeeded"
+          ]
+        }
+      },
+      "Manager_Approval": {
+        "type": "OpenApiConnection",
+        "inputs": {
+          "host": {
+            "connectionName": "shared_approvals",
+            "operationId": "StartAndWaitForAnApproval",
+            "apiId": "/providers/Microsoft.PowerApps/apis/shared_approvals"
+          },
+          "parameters": {
+            "approvalType": "ApproveRejectFirstToRespond",
+            "title": "Leave request for @{variables('EmployeeName')}",
+            "assignedTo": "@variables('ApproverEmail')"
+          }
+        },
+        "runAfter": {
+          "Initialize_variable_EmployeeEmail": [
+            "Succeeded"
+          ]
+        }
+      },
+      "Check_If_Approved": {
+        "type": "If",
+        "expression": {
+          "equals": [
+            "@body('Manager_Approval')?['outcome']",
+            "Approve"
+          ]
+        },
+        "actions": {
+          "Send_Approval_Notice": {
+            "type": "OpenApiConnection",
+            "inputs": {
+              "host": {
+                "connectionName": "shared_office365",
+                "operationId": "SendEmailNotification_V2",
+                "apiId": "/providers/Microsoft.PowerApps/apis/shared_office365"
+              },
+              "parameters": {
+                "emailMessage/To": "@variables('EmployeeEmail')",
+                "emailMessage/Subject": "Leave Request Approved",
+                "emailMessage/Body": "Your leave request has been approved by your manager."
+              }
+            },
+            "runAfter": {}
+          }
+        },
+        "else": {
+          "actions": {
+            "Send_Rejection_Notice": {
+              "type": "OpenApiConnection",
+              "inputs": {
+                "host": {
+                  "connectionName": "shared_office365",
+                  "operationId": "SendEmailNotification_V2",
+                  "apiId": "/providers/Microsoft.PowerApps/apis/shared_office365"
+                },
+                "parameters": {
+                  "emailMessage/To": "@variables('EmployeeEmail')",
+                  "emailMessage/Subject": "Leave Request Rejected",
+                  "emailMessage/Body": "Your leave request has been rejected. Please speak with your manager."
+                }
+              },
+              "runAfter": {}
+            }
+          }
+        },
+        "runAfter": {
+          "Manager_Approval": [
+            "Succeeded"
+          ]
+        }
+      }
+    }
+  },
+  "needs_manual_review": false,
+  "unsupported": [],
+  "warnings": [],
+  "metrics": {
+    "total_actions": 5,
+    "converted_count": 5,
+    "coverage_percent": 100.0
+  }
+}

@@ -1,0 +1,25 @@
+<!-- SAMPLE - simplified, not a real Nintex export -->
+<Workflow name="Set Variable and Send Email">
+    <Variables>
+        <Variable name="NotificationMessage" value="" />
+        <Variable name="AdminEmail" value="admin@company.com" />
+    </Variables>
+    <Actions>
+        <Action id="act-1" type="Start" name="Workflow Start">
+            <Settings />
+        </Action>
+        <Action id="act-2" type="SetVariable" name="Update Status Message">
+            <Settings>
+                <variable_name>NotificationMessage</variable_name>
+                <variable_value>System maintenance is scheduled for tonight at 10 PM UTC.</variable_value>
+            </Settings>
+        </Action>
+        <Action id="act-3" type="SendEmail" name="Send Maintenance Alert">
+            <Settings>
+                <to>{Variable:AdminEmail}</to>
+                <subject>Scheduled Maintenance Alert</subject>
+                <body>Notice: {Variable:NotificationMessage}</body>
+            </Settings>
+        </Action>
+    </Actions>
+</Workflow>

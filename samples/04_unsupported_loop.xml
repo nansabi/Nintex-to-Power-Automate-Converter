@@ -1,0 +1,25 @@
+<!-- SAMPLE - simplified, not a real Nintex export -->
+<Workflow name="Unsupported Loop Workflow">
+    <Variables>
+        <Variable name="ItemIndex" value="0" />
+        <Variable name="MaxCount" value="10" />
+    </Variables>
+    <Actions>
+        <Action id="act-1" type="Start" name="Workflow Start">
+            <Settings />
+        </Action>
+        <Action id="act-2" type="Loop" name="Iterate Through Items">
+            <Settings>
+                <condition>{Variable:ItemIndex} lessThan {Variable:MaxCount}</condition>
+                <max_iterations>10</max_iterations>
+            </Settings>
+        </Action>
+        <Action id="act-3" type="SendEmail" name="Notify Completion">
+            <Settings>
+                <to>admin@company.com</to>
+                <subject>Loop Processing Finished</subject>
+                <body>All items processed.</body>
+            </Settings>
+        </Action>
+    </Actions>
+</Workflow>

@@ -1,0 +1,45 @@
+<!-- SAMPLE - simplified, not a real Nintex export -->
+<Workflow name="Leave Request Approval">
+    <Variables>
+        <Variable name="EmployeeName" value="Alice Smith" />
+        <Variable name="ApproverEmail" value="manager@company.com" />
+        <Variable name="EmployeeEmail" value="alice@company.com" />
+    </Variables>
+    <Actions>
+        <Action id="act-1" type="Start" name="Workflow Start">
+            <Settings />
+        </Action>
+        <Action id="act-2" type="RequestApproval" name="Manager Approval">
+            <Settings>
+                <approver>{Variable:ApproverEmail}</approver>
+                <task_title>Leave request for {Variable:EmployeeName}</task_title>
+                <due_in_days>3</due_in_days>
+            </Settings>
+        </Action>
+        <Action id="act-3" type="Condition" name="Check If Approved">
+            <Settings>
+                <left>{Action:act-2.Outcome}</left>
+                <operator>equals</operator>
+                <right>Approved</right>
+            </Settings>
+            <Then>
+                <Action id="act-4" type="SendEmail" name="Send Approval Notice">
+                    <Settings>
+                        <to>{Variable:EmployeeEmail}</to>
+                        <subject>Leave Request Approved</subject>
+                        <body>Your leave request has been approved by your manager.</body>
+                    </Settings>
+                </Action>
+            </Then>
+            <Else>
+                <Action id="act-5" type="SendEmail" name="Send Rejection Notice">
+                    <Settings>
+                        <to>{Variable:EmployeeEmail}</to>
+                        <subject>Leave Request Rejected</subject>
+                        <body>Your leave request has been rejected. Please speak with your manager.</body>
+                    </Settings>
+                </Action>
+            </Else>
+        </Action>
+    </Actions>
+</Workflow>

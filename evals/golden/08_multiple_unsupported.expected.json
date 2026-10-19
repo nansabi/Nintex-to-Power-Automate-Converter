@@ -1,0 +1,86 @@
+{
+  "name": "Multiple Unsupported Actions Workflow",
+  "definition": {
+    "triggers": {
+      "manual": {
+        "type": "Request",
+        "kind": "Button",
+        "inputs": {
+          "schema": {
+            "type": "object",
+            "properties": {},
+            "required": []
+          }
+        }
+      }
+    },
+    "actions": {
+      "Initialize_variable_RecordCount": {
+        "type": "InitializeVariable",
+        "inputs": {
+          "variables": [
+            {
+              "name": "RecordCount",
+              "type": "String",
+              "value": "0"
+            }
+          ]
+        },
+        "runAfter": {}
+      },
+      "Update_Count": {
+        "type": "SetVariable",
+        "inputs": {
+          "name": "RecordCount",
+          "value": "5"
+        },
+        "runAfter": {
+          "Initialize_variable_RecordCount": [
+            "Succeeded"
+          ]
+        }
+      },
+      "Notify_Completion": {
+        "type": "OpenApiConnection",
+        "inputs": {
+          "host": {
+            "connectionName": "shared_office365",
+            "operationId": "SendEmailNotification_V2",
+            "apiId": "/providers/Microsoft.PowerApps/apis/shared_office365"
+          },
+          "parameters": {
+            "emailMessage/To": "admin@company.com",
+            "emailMessage/Subject": "Sync Complete",
+            "emailMessage/Body": "All batch records have been synced."
+          }
+        },
+        "runAfter": {
+          "Update_Count": [
+            "Succeeded"
+          ]
+        }
+      }
+    }
+  },
+  "needs_manual_review": true,
+  "unsupported": [
+    {
+      "id": "act-2",
+      "name": "Process Records",
+      "original_type": "Loop",
+      "reason": "Action type 'Loop' is unsupported in rule-based mapping."
+    },
+    {
+      "id": "act-4",
+      "name": "Call Legacy API",
+      "original_type": "WebServiceCall",
+      "reason": "Action type 'WebServiceCall' is unsupported in rule-based mapping."
+    }
+  ],
+  "warnings": [],
+  "metrics": {
+    "total_actions": 5,
+    "converted_count": 3,
+    "coverage_percent": 60.0
+  }
+}

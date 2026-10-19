@@ -1,0 +1,98 @@
+[
+  {
+    "sample": "01_leave_approval",
+    "workflow_name": "Leave Request Approval",
+    "is_supported": true,
+    "structure_score": 100.0,
+    "expression_score": 100.0,
+    "behaviour_score": 100.0,
+    "coverage_percent": 100.0,
+    "unsupported_count": 0,
+    "warnings_count": 0,
+    "overall_fidelity": 100.0
+  },
+  {
+    "sample": "02_simple_email",
+    "workflow_name": "Simple Email Notification",
+    "is_supported": true,
+    "structure_score": 100.0,
+    "expression_score": 100.0,
+    "behaviour_score": 100.0,
+    "coverage_percent": 100.0,
+    "unsupported_count": 0,
+    "warnings_count": 0,
+    "overall_fidelity": 100.0
+  },
+  {
+    "sample": "03_set_variable",
+    "workflow_name": "Set Variable and Send Email",
+    "is_supported": true,
+    "structure_score": 100.0,
+    "expression_score": 100.0,
+    "behaviour_score": 100.0,
+    "coverage_percent": 100.0,
+    "unsupported_count": 0,
+    "warnings_count": 0,
+    "overall_fidelity": 100.0
+  },
+  {
+    "sample": "04_unsupported_loop",
+    "workflow_name": "Unsupported Loop Workflow",
+    "is_supported": false,
+    "structure_score": 100.0,
+    "expression_score": 100.0,
+    "behaviour_score": 100.0,
+    "coverage_percent": 66.67,
+    "unsupported_count": 1,
+    "warnings_count": 0,
+    "overall_fidelity": 93.3
+  },
+  {
+    "sample": "05_nested_conditions",
+    "workflow_name": "Nested Conditions Workflow",
+    "is_supported": true,
+    "structure_score": 100.0,
+    "expression_score": 100.0,
+    "behaviour_score": 100.0,
+    "coverage_percent": 100.0,
+    "unsupported_count": 0,
+    "warnings_count": 0,
+    "overall_fidelity": 100.0
+  },
+  {
+    "sample": "06_variable_in_condition",
+    "workflow_name": "Variable In Condition Workflow",
+    "is_supported": true,
+    "structure_score": 100.0,
+    "expression_score": 100.0,
+    "behaviour_score": 100.0,
+    "coverage_percent": 100.0,
+    "unsupported_count": 0,
+    "warnings_count": 0,
+    "overall_fidelity": 100.0
+  },
+  {
+    "sample": "07_bad_reference",
+    "workflow_name": "Bad Reference Workflow",
+    "is_supported": true,
+    "structure_score": 100.0,
+    "expression_score": 100.0,
+    "behaviour_score": 100.0,
+    "coverage_percent": 100.0,
+    "unsupported_count": 0,
+    "warnings_count": 1,
+    "overall_fidelity": 95.0
+  },
+  {
+    "sample": "08_multiple_unsupported",
+    "workflow_name": "Multiple Unsupported Actions Workflow",
+    "is_supported": false,
+    "structure_score": 100.0,
+    "expression_score": 100.0,
+    "behaviour_score": 100.0,
+    "coverage_percent": 60.0,
+    "unsupported_count": 2,
+    "warnings_count": 0,
+    "overall_fidelity": 92.0
+  }
+]

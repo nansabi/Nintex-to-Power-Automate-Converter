@@ -1,0 +1,18 @@
+<!-- SAMPLE - simplified, not a real Nintex export -->
+<Workflow name="Simple Email Notification">
+    <Variables>
+        <Variable name="RecipientEmail" value="team@company.com" />
+    </Variables>
+    <Actions>
+        <Action id="act-1" type="Start" name="Workflow Start">
+            <Settings />
+        </Action>
+        <Action id="act-2" type="SendEmail" name="Send Welcome Email">
+            <Settings>
+                <to>{Variable:RecipientEmail}</to>
+                <subject>Welcome to the Team</subject>
+                <body>Welcome aboard! We are excited to work with you.</body>
+            </Settings>
+        </Action>
+    </Actions>
+</Workflow>

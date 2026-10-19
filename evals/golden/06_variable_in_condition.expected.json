@@ -1,0 +1,122 @@
+{
+  "name": "Variable In Condition Workflow",
+  "definition": {
+    "triggers": {
+      "manual": {
+        "type": "Request",
+        "kind": "Button",
+        "inputs": {
+          "schema": {
+            "type": "object",
+            "properties": {},
+            "required": []
+          }
+        }
+      }
+    },
+    "actions": {
+      "Initialize_variable_UserEmail": {
+        "type": "InitializeVariable",
+        "inputs": {
+          "variables": [
+            {
+              "name": "UserEmail",
+              "type": "String",
+              "value": "client@example.com"
+            }
+          ]
+        },
+        "runAfter": {}
+      },
+      "Initialize_variable_UserTier": {
+        "type": "InitializeVariable",
+        "inputs": {
+          "variables": [
+            {
+              "name": "UserTier",
+              "type": "String",
+              "value": "Standard"
+            }
+          ]
+        },
+        "runAfter": {
+          "Initialize_variable_UserEmail": [
+            "Succeeded"
+          ]
+        }
+      },
+      "Promote_User_Tier": {
+        "type": "SetVariable",
+        "inputs": {
+          "name": "UserTier",
+          "value": "VIP"
+        },
+        "runAfter": {
+          "Initialize_variable_UserTier": [
+            "Succeeded"
+          ]
+        }
+      },
+      "Evaluate_User_Tier": {
+        "type": "If",
+        "expression": {
+          "equals": [
+            "@variables('UserTier')",
+            "VIP"
+          ]
+        },
+        "actions": {
+          "Send_VIP_Welcome_Email": {
+            "type": "OpenApiConnection",
+            "inputs": {
+              "host": {
+                "connectionName": "shared_office365",
+                "operationId": "SendEmailNotification_V2",
+                "apiId": "/providers/Microsoft.PowerApps/apis/shared_office365"
+              },
+              "parameters": {
+                "emailMessage/To": "@variables('UserEmail')",
+                "emailMessage/Subject": "Welcome to VIP Access",
+                "emailMessage/Body": "You have been upgraded to the VIP tier."
+              }
+            },
+            "runAfter": {}
+          }
+        },
+        "else": {
+          "actions": {
+            "Send_Standard_Welcome_Email": {
+              "type": "OpenApiConnection",
+              "inputs": {
+                "host": {
+                  "connectionName": "shared_office365",
+                  "operationId": "SendEmailNotification_V2",
+                  "apiId": "/providers/Microsoft.PowerApps/apis/shared_office365"
+                },
+                "parameters": {
+                  "emailMessage/To": "@variables('UserEmail')",
+                  "emailMessage/Subject": "Welcome to Standard Access",
+                  "emailMessage/Body": "Thank you for joining our platform."
+                }
+              },
+              "runAfter": {}
+            }
+          }
+        },
+        "runAfter": {
+          "Promote_User_Tier": [
+            "Succeeded"
+          ]
+        }
+      }
+    }
+  },
+  "needs_manual_review": false,
+  "unsupported": [],
+  "warnings": [],
+  "metrics": {
+    "total_actions": 5,
+    "converted_count": 5,
+    "coverage_percent": 100.0
+  }
+}

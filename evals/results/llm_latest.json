@@ -1,0 +1,49 @@
+{
+  "status": "LIVE",
+  "items": [
+    {
+      "action_id": "act-2",
+      "action_name": "Iterate Through Items",
+      "original_type": "Loop",
+      "suggested_type": "Until",
+      "first_try_valid": true,
+      "retries_needed": 0,
+      "matched_allowed": true,
+      "confidence": 0.92,
+      "schema_valid": true,
+      "error": null,
+      "logic_check": "manual review needed"
+    },
+    {
+      "action_id": "act-2",
+      "action_name": "Process Records",
+      "original_type": "Loop",
+      "suggested_type": "Until",
+      "first_try_valid": true,
+      "retries_needed": 0,
+      "matched_allowed": true,
+      "confidence": 0.9,
+      "schema_valid": true,
+      "error": null,
+      "logic_check": "manual review needed"
+    },
+    {
+      "action_id": "act-4",
+      "action_name": "Call Legacy API",
+      "original_type": "WebServiceCall",
+      "suggested_type": "Http",
+      "first_try_valid": true,
+      "retries_needed": 0,
+      "matched_allowed": true,
+      "confidence": 0.95,
+      "schema_valid": true,
+      "error": null,
+      "logic_check": "-"
+    }
+  ],
+  "type_correct_count": 3,
+  "type_correct_total": 3,
+  "type_correct_rate": 100.0,
+  "mean_confidence": 0.92,
+  "schema_valid_rate": 100.0
+}

@@ -1,0 +1,85 @@
+{
+  "name": "Unsupported Loop Workflow",
+  "definition": {
+    "triggers": {
+      "manual": {
+        "type": "Request",
+        "kind": "Button",
+        "inputs": {
+          "schema": {
+            "type": "object",
+            "properties": {},
+            "required": []
+          }
+        }
+      }
+    },
+    "actions": {
+      "Initialize_variable_ItemIndex": {
+        "type": "InitializeVariable",
+        "inputs": {
+          "variables": [
+            {
+              "name": "ItemIndex",
+              "type": "String",
+              "value": "0"
+            }
+          ]
+        },
+        "runAfter": {}
+      },
+      "Initialize_variable_MaxCount": {
+        "type": "InitializeVariable",
+        "inputs": {
+          "variables": [
+            {
+              "name": "MaxCount",
+              "type": "String",
+              "value": "10"
+            }
+          ]
+        },
+        "runAfter": {
+          "Initialize_variable_ItemIndex": [
+            "Succeeded"
+          ]
+        }
+      },
+      "Notify_Completion": {
+        "type": "OpenApiConnection",
+        "inputs": {
+          "host": {
+            "connectionName": "shared_office365",
+            "operationId": "SendEmailNotification_V2",
+            "apiId": "/providers/Microsoft.PowerApps/apis/shared_office365"
+          },
+          "parameters": {
+            "emailMessage/To": "admin@company.com",
+            "emailMessage/Subject": "Loop Processing Finished",
+            "emailMessage/Body": "All items processed."
+          }
+        },
+        "runAfter": {
+          "Initialize_variable_MaxCount": [
+            "Succeeded"
+          ]
+        }
+      }
+    }
+  },
+  "needs_manual_review": true,
+  "unsupported": [
+    {
+      "id": "act-2",
+      "name": "Iterate Through Items",
+      "original_type": "Loop",
+      "reason": "Action type 'Loop' is unsupported in rule-based mapping."
+    }
+  ],
+  "warnings": [],
+  "metrics": {
+    "total_actions": 3,
+    "converted_count": 2,
+    "coverage_percent": 66.67
+  }
+}
